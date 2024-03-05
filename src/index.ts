@@ -8,4 +8,4 @@ dotenv.config();
 export const app: Express = express();
 app.use(express.json());
 app.use("/api/hello", helloRouter);
-app.use("/api/task", tasksRouter);
+app.use("/api/tasks", tasksRouter);

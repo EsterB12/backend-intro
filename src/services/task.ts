@@ -1,8 +1,8 @@
-import { useLocalStorage } from "usehooks-ts";
 import { Task } from "../models/task";
 
-const savedTasks: Array<Task> = [
+export const savedTasks: Array<Task> = [
   { id: 1, walletAddress: "0x0", description: "much description" },
+  { id: 2, walletAddress: "0x02", description: "second entry" },
 ];
 
 export const createTask = async (task: Task) => {
@@ -19,8 +19,16 @@ export const createTask = async (task: Task) => {
 export const deleteTaskById = async (id: number) => {
   try {
     if (id) {
-      const newTasks = savedTasks.filter((task: Task) => task.id !== id);
-      return newTasks;
+      const tasksToDelete = savedTasks.findIndex(
+        (task: Task) => task.id === id
+      );
+      if (tasksToDelete !== -1) {
+        const newTasks = savedTasks.filter((task: Task) => task.id !== id);
+
+        return newTasks;
+      }
+    } else {
+      throw new Error("This task does not exist");
     }
   } catch (err) {
     console.error(err);
@@ -30,11 +38,17 @@ export const deleteTaskById = async (id: number) => {
 export const deleteTasksByAddress = async (walletAddress: string) => {
   try {
     if (walletAddress) {
-      const newTasks = savedTasks.filter(
-        (task: Task) => task.walletAddress !== walletAddress
+      const tasksToDelete = savedTasks.findIndex(
+        (task: Task) => task.walletAddress === walletAddress
       );
-
-      return newTasks;
+      if (tasksToDelete !== -1) {
+        const newTasks = savedTasks.filter(
+          (task: Task) => task.walletAddress !== walletAddress
+        );
+        return newTasks;
+      }
+    } else {
+      throw new Error("This task does not exist");
     }
   } catch (err) {
     console.error(err);
@@ -45,14 +59,18 @@ export const updateTaskById = async (id: number, taskData: Task) => {
   try {
     if (id) {
       const taskIndex = savedTasks.findIndex((task: Task) => task.id === id);
-      const updatedEntry = savedTasks[taskIndex];
-      savedTasks[taskIndex] = {
-        id: taskIndex + 1,
-        walletAddress: taskData.walletAddress ?? updatedEntry.walletAddress,
-        description: taskData.description ?? updatedEntry.description,
-      };
+      if (taskIndex !== -1) {
+        const updatedEntry = savedTasks[taskIndex];
+        savedTasks[taskIndex] = {
+          id: taskIndex + 1,
+          walletAddress: taskData.walletAddress ?? updatedEntry.walletAddress,
+          description: taskData.description ?? updatedEntry.description,
+        };
 
-      return savedTasks;
+        return savedTasks;
+      }
+    } else {
+      throw new Error("Cannot update task: not found");
     }
   } catch (err) {
     console.error(err);
