@@ -1,0 +1,1 @@
+ALTER TABLE "tasks" RENAME COLUMN "wallet-address" TO "wallet_address";

@@ -1,101 +1,88 @@
-import { Task } from "../models/task";
+import { Task, TaskInsert, tasks } from "../db/schema";
+import { db, schema, eq } from "../db";
 
-export const savedTasks: Array<Task> = [
-  { id: 1, walletAddress: "0x0", description: "much description" },
-  { id: 2, walletAddress: "0x02", description: "second entry" },
-];
-
-export const createTask = async (task: Task) => {
+export const createTask = async (
+  data: Pick<Task, "wallet_address" | "description">
+) => {
+  console.log(data);
   try {
-    if (task) {
-      const newTasks = [...savedTasks, task];
-      return newTasks;
-    }
-  } catch (err) {
-    console.error(err);
-  }
-};
+    let [task] = await db
+      .select()
+      .from(schema.tasks)
+      .where(eq(schema.tasks.wallet_address, data.wallet_address as string))
+      .limit(1);
 
-export const deleteTaskById = async (id: number) => {
-  try {
-    if (id) {
-      const tasksToDelete = savedTasks.findIndex(
-        (task: Task) => task.id === id
-      );
-      if (tasksToDelete !== -1) {
-        const newTasks = savedTasks.filter((task: Task) => task.id !== id);
+    if (!task) {
+      [task] = await db.insert(schema.tasks).values(data).returning();
 
-        return newTasks;
+      if (!task) {
+        throw new Error("Failed to create task");
       }
-    } else {
-      throw new Error("This task does not exist");
     }
+
+    await db.insert(schema.tasks).values({
+      id: task.id,
+      wallet_address: data.wallet_address,
+      description: data.description,
+    });
   } catch (err) {
     console.error(err);
   }
 };
 
-export const deleteTasksByAddress = async (walletAddress: string) => {
+export const deleteTaskById = async (id: Task["id"]) => {
+  await db.delete(schema.tasks).where(eq(schema.tasks.id, id));
+
+  return;
+};
+
+export const deleteTasksByAddress = async (
+  walletAddress: Task["wallet_address"]
+) => {
+  await db
+    .delete(schema.tasks)
+    .where(eq(schema.tasks.wallet_address, walletAddress as string));
+
+  return;
+};
+
+export const updateTaskById = async (
+  id: Task["id"],
+  taskData: Partial<TaskInsert>
+) => {
   try {
-    if (walletAddress) {
-      const tasksToDelete = savedTasks.findIndex(
-        (task: Task) => task.walletAddress === walletAddress
-      );
-      if (tasksToDelete !== -1) {
-        const newTasks = savedTasks.filter(
-          (task: Task) => task.walletAddress !== walletAddress
-        );
-        return newTasks;
-      }
-    } else {
-      throw new Error("This task does not exist");
-    }
+    await db.update(schema.tasks).set(taskData).where(eq(schema.tasks.id, id));
+    return getTaskByID(id);
   } catch (err) {
     console.error(err);
   }
 };
 
-export const updateTaskById = async (id: number, taskData: Task) => {
+export const getTaskByID = async (id: Task["id"]) => {
   try {
-    if (id) {
-      const taskIndex = savedTasks.findIndex((task: Task) => task.id === id);
-      if (taskIndex !== -1) {
-        const updatedEntry = savedTasks[taskIndex];
-        savedTasks[taskIndex] = {
-          id: taskIndex + 1,
-          walletAddress: taskData.walletAddress ?? updatedEntry.walletAddress,
-          description: taskData.description ?? updatedEntry.description,
-        };
-
-        return savedTasks;
-      }
-    } else {
-      throw new Error("Cannot update task: not found");
+    if (!id) {
+      return null;
     }
+    const [task] = await db.select().from(tasks).where(eq(tasks.id, id));
+    return task ?? null;
   } catch (err) {
     console.error(err);
   }
 };
 
-export const getTaskByID = async (id: number) => {
+export const getTasksByWallet = async (
+  walletAddress: Task["wallet_address"]
+) => {
   try {
-    if (savedTasks) {
-      const taskById = savedTasks.filter((task: Task) => task.id === id);
-      return taskById;
+    if (!walletAddress) {
+      return null;
     }
-  } catch (err) {
-    console.error(err);
-  }
-};
+    const task = await db
+      .select()
+      .from(tasks)
+      .where(eq(tasks.wallet_address, walletAddress));
 
-export const getTasksByWallet = async (walletAddress: string) => {
-  try {
-    if (savedTasks) {
-      const tasksByWallet = savedTasks.filter(
-        (task: Task) => task.walletAddress === walletAddress
-      );
-      return tasksByWallet;
-    }
+    return task ?? null;
   } catch (err) {
     console.error(err);
   }
@@ -103,9 +90,8 @@ export const getTasksByWallet = async (walletAddress: string) => {
 
 export const getAllTasks = async () => {
   try {
-    if (savedTasks) {
-      return savedTasks;
-    }
+    const tasks = await db.select().from(schema.tasks);
+    return tasks;
   } catch (err) {
     console.error(err);
   }

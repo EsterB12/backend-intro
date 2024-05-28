@@ -5,11 +5,11 @@ export const tasksRouter = Router();
 import {
   createTask,
   deleteTaskById,
-  deleteTasksByAddress,
   updateTaskById,
   getTaskByID,
   getTasksByWallet,
   getAllTasks,
+  deleteTasksByAddress,
 } from "../services/task";
 
 export const create = async (req: Request, res: Response) => {
