@@ -24,7 +24,7 @@ describe("User Service", () => {
     it("should create a task", async () => {
       const taskData = {
         id: 5,
-        wallet_address: "0x123",
+        walletAddress: "0x123",
         description: "why hello there",
       };
       await createTask(taskData);

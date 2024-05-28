@@ -2,7 +2,7 @@ import { pgTable, serial, varchar } from "drizzle-orm/pg-core";
 
 export const tasks = pgTable("Tasks", {
   id: serial("id").primaryKey(),
-  wallet_address: varchar("wallet_address"),
+  walletAddress: varchar("walletAddress"),
   description: varchar("description"),
 });
 

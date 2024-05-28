@@ -2,14 +2,14 @@ import { Task, TaskInsert, tasks } from "../db/schema";
 import { db, schema, eq } from "../db";
 
 export const createTask = async (
-  data: Pick<Task, "wallet_address" | "description">
+  data: Pick<Task, "walletAddress" | "description">
 ) => {
   console.log(data);
   try {
     let [task] = await db
       .select()
       .from(schema.tasks)
-      .where(eq(schema.tasks.wallet_address, data.wallet_address as string))
+      .where(eq(schema.tasks.walletAddress, data.walletAddress as string))
       .limit(1);
 
     if (!task) {
@@ -22,7 +22,7 @@ export const createTask = async (
 
     await db.insert(schema.tasks).values({
       id: task.id,
-      wallet_address: data.wallet_address,
+      walletAddress: data.walletAddress,
       description: data.description,
     });
   } catch (err) {
@@ -37,11 +37,11 @@ export const deleteTaskById = async (id: Task["id"]) => {
 };
 
 export const deleteTasksByAddress = async (
-  walletAddress: Task["wallet_address"]
+  walletAddress: Task["walletAddress"]
 ) => {
   await db
     .delete(schema.tasks)
-    .where(eq(schema.tasks.wallet_address, walletAddress as string));
+    .where(eq(schema.tasks.walletAddress, walletAddress as string));
 
   return;
 };
@@ -71,7 +71,7 @@ export const getTaskByID = async (id: Task["id"]) => {
 };
 
 export const getTasksByWallet = async (
-  walletAddress: Task["wallet_address"]
+  walletAddress: Task["walletAddress"]
 ) => {
   try {
     if (!walletAddress) {
@@ -80,7 +80,7 @@ export const getTasksByWallet = async (
     const task = await db
       .select()
       .from(tasks)
-      .where(eq(tasks.wallet_address, walletAddress));
+      .where(eq(tasks.walletAddress, walletAddress));
 
     return task ?? null;
   } catch (err) {

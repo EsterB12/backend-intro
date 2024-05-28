@@ -1,15 +1,22 @@
 /* Packages */
+import {
+  DB_NAME,
+  DB_HOST,
+  DB_PASSWORD,
+  DB_PORT,
+  DB_USER,
+} from "../../src/config/variables";
 import { drizzle, NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Client } from "pg";
 
 import * as schema from "./schema";
 
 export const connection = new Client({
-  host: "127.0.0.1",
-  port: 5432,
-  user: "postgres",
-  password: "12345",
-  database: "be-intro",
+  host: DB_HOST,
+  port: DB_PORT,
+  user: DB_USER,
+  password: DB_PASSWORD,
+  database: DB_NAME,
 });
 
 connection.connect();
