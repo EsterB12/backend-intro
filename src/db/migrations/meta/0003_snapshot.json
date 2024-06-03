@@ -1,0 +1,43 @@
+{
+  "id": "c3b81e57-befd-486a-bdf6-5b3e36c21dec",
+  "prevId": "b7467c98-2f35-41e1-947f-cd9776657835",
+  "version": "6",
+  "dialect": "postgresql",
+  "tables": {
+    "public.Tasks": {
+      "name": "Tasks",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "wallet_address": {
+          "name": "wallet_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

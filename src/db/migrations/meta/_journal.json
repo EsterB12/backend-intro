@@ -1,0 +1,41 @@
+{
+  "version": "6",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1716804701157,
+      "tag": "0000_sticky_cargill",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1716817897802,
+      "tag": "0001_low_earthquake",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1716818133510,
+      "tag": "0002_common_northstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1716902582546,
+      "tag": "0003_spooky_zaladane",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1716902669133,
+      "tag": "0004_lying_colossus",
+      "breakpoints": true
+    }
+  ]
+}
